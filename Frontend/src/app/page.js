@@ -1,6 +1,6 @@
 "use client";
-import { useEffect } from "react";
 import { useState } from "react";
+import { useEffect } from "react";
 import { TaskList } from "@/components/TaskList";
 import { nanoid } from "nanoid";
 
@@ -22,6 +22,16 @@ export default function Home() {
       timer: "00:10:00"
     },
   ]);
+  
+  function addTask(newTask) {
+    newTask.id = nanoid();
+    setTasks([...tasks, newTask]);
+  }
+  
+  function deleteTask(id) {
+    const newTasks = tasks.filter((task)=> task.id !== id)
+    setTasks(newTasks);
+  }
 
   /*commented out until backend is ready
   useEffect(() => {
@@ -36,7 +46,10 @@ export default function Home() {
   return (
     <div className="container">
       <h1>Container</h1>
-      <TaskList tasks={tasks}/>
+      <TaskList tasks={tasks} 
+        addTask={addTask}
+        handleDeleteTask={deleteTask}
+        />
     </div>
   )
   /*
