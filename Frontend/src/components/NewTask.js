@@ -4,11 +4,13 @@ import { MdDeleteForever } from "react-icons/md";
 import {MdAdd} from "react-icons/md";
 
 
-
 export function NewTask({ addTask }) {
     const [title, setTitle] = useState("");
-    const [timer, setTimer] = useState("");
+    const [hours, setHours] = useState("");
+    const [minutes, setMinutes] = useState("");
+    const [seconds, setSeconds] = useState("");
     const characterLimit = 40;
+    const timerLimit = 60
 
     function handleTitleChange( event ) {
         if(characterLimit - event.target.value.length >= 0) {
@@ -16,8 +18,22 @@ export function NewTask({ addTask }) {
         }
     }
 
-    function handleTimerChange( event ) {
-        setTimer(event.target.value);
+    function handleHourChange( event ) {
+        if(event.target.value < timerLimit) {
+            setHours(event.target.value);
+        }
+    }
+
+    function handleMinuteChange( event ) { 
+        if(event.target.value < timerLimit) {
+            setMinutes(event.target.value);
+        }
+    }
+    
+    function handleSecondChange( event ) {
+        if(event.target.value < timerLimit) {
+            setSeconds(event.target.value);
+        }
     }
 
     function handleSubmit( event ) {
@@ -26,11 +42,15 @@ export function NewTask({ addTask }) {
         const newTask = {
             id: null,
             title: title,
-            timer: timer
+            hours: hours,
+            minutes: minutes,
+            seconds: seconds
         }
         addTask(newTask);
         setTitle("");
-        setTimer("");
+        setHours("");
+        setMinutes("");
+        setSeconds("");
     }
 
     return (
@@ -43,19 +63,35 @@ export function NewTask({ addTask }) {
             placeholder="Task Title" 
             required
         ></input>
-        <input 
-            className="text-input" 
-            value={timer}
-            onChange={handleTimerChange}
-            placeholder="Timer (HH:MM:SS)" 
-            required
-        ></input>
+        <div className="time-input">
+            <input 
+                className="hours"
+                type="number" 
+                value={hours}
+                onChange={handleHourChange}
+                placeholder="H" 
+            ></input>
+                <input 
+                className="minutes" 
+                type="number"
+                value={minutes}
+                onChange={handleMinuteChange}
+                placeholder="M" 
+            ></input>
+                <input 
+                className="seconds" 
+                type="number"
+                value={seconds}
+                onChange={handleSecondChange}
+                placeholder="S" 
+            ></input>
+        </div>
         <div className="icons">       
             <button type="submit">
-                <MdAdd className="add-icon" size="1.3em"/>
+                <MdAdd className="add-icon"/>
             </button>
-            <button >
-                <MdDeleteForever className="delete-icon" size="1.3em"/>
+            <button>
+                <MdDeleteForever className="delete-icon"/>
             </button>
         </div>
     </form>

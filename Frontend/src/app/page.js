@@ -7,24 +7,30 @@ import { nanoid } from "nanoid";
 export default function Home() {
   const [tasks, setTasks] = useState([
     { 
-      id: nanoid(),
+      id: 0,
       title: "Sample Task 1",
-      timer: "00:25:00"
+      hours: 0,
+      minutes: 0,
+      seconds: 30
     },
     {
-      id: nanoid(),
+      id: 1,
       title: "Sample Task 2",
-      timer: "00:15:00"
+      hours: 0,
+      minutes: 0,
+      seconds: 30
     },
     {
-      id: nanoid(),
+      id: 2,
       title: "Sample Task 3",
-      timer: "00:10:00"
+      hours: 0,
+      minutes: 0,
+      seconds: 30
     },
   ]);
   
   function addTask(newTask) {
-    newTask.id = nanoid();
+    newTask.id = tasks.length;
     setTasks([...tasks, newTask]);
   }
   
@@ -42,6 +48,22 @@ export default function Home() {
       })
   }, []);
   */
+
+  /* if I decide to implement local storage
+  useEffect(() => {
+    const savedTasks = JSON.parse(localStorage.getItem("react-app-focus-flow-data"));
+    
+    if (savedTasks) {
+      setTasks(savedTasks);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("react-app-focus-flow-data", JSON.stringify(tasks));
+  }, [tasks]);
+  */
+
+  
 
   return (
     <div className="container">
