@@ -2,31 +2,10 @@
 import { useState } from "react";
 import { useEffect } from "react";
 import { TaskList } from "@/components/TaskList";
-import { nanoid } from "nanoid";
 
 export default function Home() {
   const [tasks, setTasks] = useState([
-    { 
-      id: 0,
-      title: "Sample Task 1",
-      hours: 0,
-      minutes: 0,
-      seconds: 30
-    },
-    {
-      id: 1,
-      title: "Sample Task 2",
-      hours: 0,
-      minutes: 0,
-      seconds: 30
-    },
-    {
-      id: 2,
-      title: "Sample Task 3",
-      hours: 0,
-      minutes: 0,
-      seconds: 30
-    },
+    
   ]);
   
   function addTask(newTask) {
@@ -67,25 +46,11 @@ export default function Home() {
 
   return (
     <div className="container">
-      <h1>Container</h1>
+      <h1>Focus Flow</h1>
       <TaskList tasks={tasks} 
         addTask={addTask}
         handleDeleteTask={deleteTask}
         />
     </div>
   )
-  /*
-  return (
-    <div>
-      <h2>Books from API</h2>
-      {books.map((book) => (
-        <div>
-          <p>Title: {book.title}</p>
-          <p>Author: {book.author}</p>
-          <p>Quantity: {book.quantity}</p>
-        </div>
-      ))}
-    </div>
-  );
-  */
 }

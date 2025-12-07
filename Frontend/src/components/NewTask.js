@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import { MdDeleteForever } from "react-icons/md";
 import {MdAdd} from "react-icons/md";
 
 
@@ -89,9 +88,6 @@ export function NewTask({ addTask }) {
         <div className="icons">       
             <button type="submit">
                 <MdAdd className="add-icon"/>
-            </button>
-            <button>
-                <MdDeleteForever className="delete-icon"/>
             </button>
         </div>
     </form>
