@@ -33,10 +33,17 @@
   width: 100%
 }
 
-.task.active {
+ .task.active {
   background-color: lightgreen;
   border: 5px solid green;
-}
+  animation: pulse 3s infinite;
+} 
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 5px rgba(0, 120, 255, 0.3); }
+    50% { box-shadow: 0 0 20px rgba(0, 100, 0, 0.7); }
+    100% { box-shadow: 0 0 5px rgba(0, 120, 255, 0.3); }
+} 
 
 .task-form {
   background-color: lightgray;

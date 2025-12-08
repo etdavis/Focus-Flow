@@ -28,7 +28,6 @@ export default function Home() {
   }, []);
   */
 
-  /* if I decide to implement local storage
   useEffect(() => {
     const savedTasks = JSON.parse(localStorage.getItem("react-app-focus-flow-data"));
     
@@ -40,9 +39,7 @@ export default function Home() {
   useEffect(() => {
     localStorage.setItem("react-app-focus-flow-data", JSON.stringify(tasks));
   }, [tasks]);
-  */
-
-  
+    
 
   return (
     <div className="container">
