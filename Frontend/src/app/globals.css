@@ -29,6 +29,7 @@
   padding: 1rem;
   margin: 0.5rem;
   display: flex;
+  align-items: center;
   justify-content: space-between;
   width: 100%
 }
@@ -45,48 +46,59 @@
     100% { box-shadow: 0 0 5px rgba(0, 120, 255, 0.3); }
 } 
 
-.task-form {
+.new-task {
   background-color: lightgray;
-  max-width: 600px;
-  margin: 0.5rem;
+  border: 2px, solid, black;
+  border-radius: 10px;
+  width: 100%;
   padding: 1rem;
+  margin: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.task-form {
+  width: 100%;
   border-radius: 10px;
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
 }
 
 .text-input {
-  flex-grow: 1;
+  
   margin-right: 10px;
   padding: 0.5rem;
   border-radius: 5px;
   background-color: black;
   color: white;
   caret-color: white;
-  max-width: 15rem;
+  max-width: 50%;
 }
 
 .time-input {
   display: flex;
-  gap: 5px;
-  align-items: center;
-  margin-right: 10px;
+  justify-content: space-between;
   color: white;
   caret-color: white;
+  max-width: 50%;
 }
 
 .hours, .minutes, .seconds {
-  width: 4rem;
   padding: 0.5rem;
   border-radius: 5px;
   border: 1px solid #ccc;
   background-color: black;
+  max-width: 30%;
 } 
 
 .timer {
   display: flex;
   flex-direction: column;
   align-items: center;
+  font-size: 20px;
   }
 
 .timer-buttons {
@@ -94,7 +106,6 @@
   flex-direction: row;
   align-items: center;
   gap: 10px;
-  border-width: 1px;
 }
 
 .timer-buttons button {
@@ -112,6 +123,7 @@
 
 .icons {
   display: flex;
+  flex-direction: row;
   align-items: center;
   gap: 10px;
 }
@@ -119,4 +131,69 @@
 .icons button:hover {
   transform: scale(1.5);
   transition: transform 0.2s;
+}
+
+.reorder-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    width: 320px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 12px rgba(0,0,0,0.3);
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.modal-content input {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 6px;
+    border: 1px solid #ccc;
+}
+
+.save, .cancel {
+    padding: 8px 16px;
+    border: 1px solid black;
+    border-radius: 5px;
+} 
+
+.modal-errors {
+    background: #ffefef;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    border: 1px solid #ffaaaa;
+}
+
+.error-text {
+    color: #cc0000;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.save-button.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }

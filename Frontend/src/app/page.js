@@ -4,16 +4,17 @@ import { useEffect } from "react";
 import { TaskList } from "@/components/TaskList";
 
 export default function Home() {
+  
   const [tasks, setTasks] = useState([
     
   ]);
   
-  function addTask(newTask) {
-    newTask.id = tasks.length;
+  const addTask = (newTask) => {
+    newTask.id = Date.now().toString();
     setTasks([...tasks, newTask]);
   }
   
-  function deleteTask(id) {
+  const deleteTask = (id) => {
     const newTasks = tasks.filter((task)=> task.id !== id)
     setTasks(newTasks);
   }
@@ -47,6 +48,7 @@ export default function Home() {
       <TaskList tasks={tasks} 
         addTask={addTask}
         handleDeleteTask={deleteTask}
+        setTasks={setTasks}
         />
     </div>
   )

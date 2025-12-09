@@ -4,7 +4,7 @@ import { useTimer } from 'react-timer-hook';
 import { MdPause, MdPlayArrow, MdReplay } from "react-icons/md";
 
 
-export function Timer({ expiryTimestamp, startValue, isActive, autoStart, onManualStart, onComplete }) {
+export function Timer({ expiryTimestamp, startValue, ...props }) {
     const playSound = () => {
         const audio = new Audio("/sounds/timer-terminer-342934.mp3"); 
         audio.play().catch(err => console.log("Audio play error:", err));
@@ -26,7 +26,7 @@ export function Timer({ expiryTimestamp, startValue, isActive, autoStart, onManu
         autoStart: false,
         onExpire: () => {
             playSound();
-            onComplete();
+            props.onComplete();
         }, 
         interval: 20 
     });
@@ -35,17 +35,17 @@ export function Timer({ expiryTimestamp, startValue, isActive, autoStart, onManu
     const startTime = startValue;
 
     useEffect(() => {
-        if (isActive) {
+        if (props.isActive) {
             const time = new Date();
             time.setSeconds(time.getSeconds() + startValue);
-            restart(time, autoStart); // auto-start only the active timer
+            restart(time, props.isActive && props.autoStart); // auto-start only the active timer
         } else {
             pause();
         }
-    }, [isActive, autoStart]);
+    }, [props.isActive, props.autoStart, startValue, expiryTimestamp, restart, pause]);
 
     const handlePlayClick = () => {
-        onManualStart();  // enable cascade
+        props.onManualStart();  // enable cascade
         resume();         // start this timer
     };
 
@@ -56,9 +56,8 @@ export function Timer({ expiryTimestamp, startValue, isActive, autoStart, onManu
                 <span>{minutes.toString().padStart(2, "0")}</span>:
                 <span>{seconds.toString().padStart(2, "0")}</span>
         </div>
-        <p>{isRunning ? 'Running' : 'Not running'}</p>
-        <p>{isActive ? 'Active' : 'Not active'}</p>
-        {isActive && (
+        
+        {props.isActive && (
             <div className="timer-buttons">
                 <div>{!isRunning ? 
                     <button onClick={handlePlayClick}>
