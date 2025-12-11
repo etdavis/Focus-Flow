@@ -2,118 +2,130 @@ package main
 
 import (
 	"net/http"
-
-	"errors"
+	"sort"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
-type book struct {
-	ID       string `json:"id"`
-	Title    string `json:"title"`
-	Author   string `json:"author"`
-	Quantity int    `json:"quantity"`
+type Task struct {
+	ID      string `json:"id"`
+	Title   string `json:"title"`
+	Hours   int    `json:"hours"`
+	Minutes int    `json:"minutes"`
+	Seconds int    `json:"seconds"`
+	Order   int    `json:"order"` 
 }
 
-var books = []book{
-	{ID: "1", Title: "In Search of Lost Time", Author: "Marcel Proust", Quantity: 2},
-	{ID: "2", Title: "The Great Gatsby", Author: "F. Scott Fitzgerald", Quantity: 5},
-	{ID: "3", Title: "War and Peace", Author: "Leo Tolstoy", Quantity: 6},
+var tasks = []Task{
+	{
+		ID:      "1",
+		Title:   "Example Task",
+		Hours:   0,
+		Minutes: 1,
+		Seconds: 30,
+		Order:   0,
+	},
 }
 
-func getBooks(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, books)
+func getTasks(c *gin.Context) {
+	sort.Slice(tasks, func(i, j int) bool {
+		return tasks[i].Order < tasks[j].Order
+	})
+
+	c.IndentedJSON(http.StatusOK, tasks)
 }
 
-func bookById(c *gin.Context) {
+func createTask(c *gin.Context) {
+	var newTask Task
+
+	if err := c.BindJSON(&newTask); err != nil {
+		return
+	}
+
+	newTask.ID = uuid.NewString()
+	newTask.Order = len(tasks)
+
+	tasks = append(tasks, newTask)
+	c.IndentedJSON(http.StatusCreated, newTask)
+}
+
+func updateTask(c *gin.Context) {
 	id := c.Param("id")
-	book, err := getBookById(id)
 
-	if err != nil {
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "Book not found."})
+	var updated Task
+	if err := c.BindJSON(&updated); err != nil {
 		return
 	}
 
-	c.IndentedJSON(http.StatusOK, book)
-}
+	for i := range tasks {
+		if tasks[i].ID == id {
+			updated.ID = id
+			updated.Order = tasks[i].Order
 
-func checkoutBook(c *gin.Context) {
-	id, ok := c.GetQuery("id")
-
-	if !ok {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Missing id query parameter."})
-		return
-	}
-
-	book, err := getBookById(id)
-
-	if err != nil {
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "Book not found."})
-		return
-	}
-
-	if book.Quantity <= 0 {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Book not available."})
-		return
-	}
-
-	book.Quantity -= 1
-	c.IndentedJSON(http.StatusOK, book)
-}
-
-func returnBook(c *gin.Context) {
-	id, ok := c.GetQuery("id")
-
-	if !ok {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Missing id query parameter."})
-		return
-	}
-
-	book, err := getBookById(id)
-
-	if err != nil {
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "Book not found."})
-		return
-	}
-
-	book.Quantity += 1
-	c.IndentedJSON(http.StatusOK, book)
-}
-
-func getBookById(id string) (*book, error) {
-	for i, b := range books {
-		if b.ID == id {
-			return &books[i], nil
+			tasks[i] = updated
+			c.IndentedJSON(http.StatusOK, updated)
+			return
 		}
 	}
 
-	return nil, errors.New("book not found")
+	c.IndentedJSON(http.StatusNotFound, gin.H{"error": "task not found"})
 }
 
-func createBook(c *gin.Context) {
-	var newBook book
+func deleteTask(c *gin.Context) {
+	id := c.Param("id")
 
-	if err := c.BindJSON(&newBook); err != nil {
+	for i := range tasks {
+		if tasks[i].ID == id {
+			tasks = append(tasks[:i], tasks[i+1:]...)
+			c.IndentedJSON(http.StatusOK, gin.H{"status": "deleted"})
+			return
+		}
+	}
+
+	c.IndentedJSON(http.StatusNotFound, gin.H{"error": "task not found"})
+}
+
+// reorder expects an array of { id: string, order: number }
+func reorderTasks(c *gin.Context) {
+	var incoming []Task
+	if err := c.BindJSON(&incoming); err != nil {
 		return
 	}
 
-	books = append(books, newBook)
-	c.IndentedJSON(http.StatusCreated, newBook)
+	for _, inc := range incoming {
+		for i := range tasks {
+			if tasks[i].ID == inc.ID {
+				tasks[i].Order = inc.Order
+			}
+		}
+	}
+
+	sort.Slice(tasks, func(i, j int) bool {
+		return tasks[i].Order < tasks[j].Order
+	})
+
+	c.IndentedJSON(http.StatusOK, tasks)
 }
+
 
 func main() {
 	router := gin.Default()
+
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:3000"},
 		AllowMethods:     []string{"PUT", "PATCH", "POST", "DELETE", "GET"},
 		AllowHeaders:     []string{"Content-Type"},
 		AllowCredentials: true,
 	}))
-	router.GET("/books", getBooks)
-	router.GET("/books/:id", bookById)
-	router.POST("/books", createBook)
-	router.PATCH("/checkout", checkoutBook)
-	router.PATCH("/return", returnBook)
+
+	router.GET("/tasks", getTasks)
+	router.POST("/tasks", createTask)
+	router.PUT("/tasks/:id", updateTask)
+	router.DELETE("/tasks/:id", deleteTask)
+
+	router.POST("/tasks/reorder", reorderTasks)
+
 	router.Run("localhost:8080")
 }
